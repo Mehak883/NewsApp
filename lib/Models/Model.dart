@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Usermodel {
   String? uid;
   String? name;
@@ -11,8 +13,11 @@ class Usermodel {
     this.email,
   });
 
-  Usermodel copyWith({String? uid,String? name,String? email,
-}) {
+  Usermodel copyWith({
+    String? uid,
+    String? name,
+    String? email,
+  }) {
     return Usermodel(
       uid: uid ?? this.uid,
       name: name ?? this.name,
@@ -53,4 +58,42 @@ class Usermodel {
 
   @override
   int get hashCode => uid.hashCode ^ name.hashCode ^ email.hashCode;
+}
+
+class Newsmodel {
+  String? id;
+  String? title;
+  String? imageUrl;
+  String? description;
+  Timestamp? ntime;
+
+  Newsmodel({this.id, this.title, this.imageUrl, this.description, this.ntime});
+
+  Newsmodel copyWith(
+      {String? id,
+      String? title,
+      String? imageUrl,
+      String? description,
+      Timestamp? ntime}) {
+    return Newsmodel(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        imageUrl: imageUrl ?? this.imageUrl,
+        description: description ?? this.description,
+        ntime: ntime ?? this.ntime);
+  }
+
+  factory Newsmodel.fromDocument(DocumentSnapshot doc) {
+    return Newsmodel(
+      id: doc.id,
+      title: doc['title'] != null ? doc['title'] as String : null,
+      imageUrl: doc['imageUrl'] != null ? doc['imageUrl'] as String : null,
+      description:
+          doc['description'] != null ? doc['description'] as String : '',
+      ntime: doc['ntime'] != null ? doc['ntime'] as Timestamp : null,
+    );
+  }
+  @override
+  String toString() =>
+      'Newsmodel(id : $id , title : $title , description : $description , imageUrl : $imageUrl , ntime : $ntime)';
 }

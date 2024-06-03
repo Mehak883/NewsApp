@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:newsapp/Models/Model.dart';
 
 final FirebaseFirestore store = FirebaseFirestore.instance;
 final CollectionReference reference = store.collection("Users");
+final CollectionReference newsref = store.collection("News");
 
 class FirebaseStore {
   static Future createUser(String email, String password) async {
@@ -16,6 +18,7 @@ class FirebaseStore {
       return e;
     }
   }
+
   static Future signinUser(String email, String password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -27,4 +30,70 @@ class FirebaseStore {
       return e;
     }
   }
+
+  static Future<List<Newsmodel>> getQueryData(String type) async {
+    try {
+      var querySnapshot = await store
+          .collection('News')
+          .doc('FToQXviFMx6ADrx1ul1X')
+          .collection(type)
+          .get();
+
+      List<Newsmodel> newslist = [];
+      if (querySnapshot.docs.isNotEmpty) {
+        // ignore: avoid_function_literals_in_foreach_calls
+        querySnapshot.docs.forEach((doc) {
+          // ignore: unnecessary_cast
+          Newsmodel a = Newsmodel.fromDocument(doc);
+          newslist.add(a);
+          // print(a);
+        });
+      }
+      if (newslist.isEmpty) {
+        return [];
+      }
+      return newslist;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+
+static Future<List<Newsmodel>> getLatestData(String type) async {
+    try {
+      var querySnapshot = await store
+          .collection('News')
+          .doc('FToQXviFMx6ADrx1ul1X')
+          .collection(type)
+          .orderBy('ntime',descending: true)
+          .get();
+
+      List<Newsmodel> newslist = [];
+      if (querySnapshot.docs.isNotEmpty) {
+        // ignore: avoid_function_literals_in_foreach_calls
+        querySnapshot.docs.forEach((doc) {
+          // ignore: unnecessary_cast
+          Newsmodel a = Newsmodel.fromDocument(doc);
+          newslist.add(a);
+          // print(a);
+        });
+      }
+      if (newslist.isEmpty) {
+        return [];
+      }
+      return newslist;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // static Future getTypes() async {
+  //   store.collection("News").doc('FToQXviFMx6ADrx1ul1X').snapshots().length;
+  //    DocumentReference docRef = store.doc('News/FToQXviFMx6ADrx1ul1X');
+  //   List<CollectionReference> subcollections = await docRef.listCollections().toList();
+  //   return subcollections.length;
+  //   //  s.
+  // }
 }
