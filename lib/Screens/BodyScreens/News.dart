@@ -1,7 +1,7 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 class News extends StatefulWidget {
   const News(
@@ -41,7 +41,7 @@ class _NewsBodyState extends State<News> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    child: Icon(Icons.arrow_back),
+                    child: const Icon(Icons.arrow_back),
                     onTap: () {
                       Navigator.pop(context);
                     },
@@ -64,10 +64,10 @@ class _NewsBodyState extends State<News> {
                                     width:
                                         MediaQuery.of(context).size.width - 20,
                                     fit: BoxFit.cover),
-                                    SizedBox(height: 10,),
-                                Flexible(child: Text(widget.description,style: TextStyle(fontSize: 18),)),
-                                SizedBox(height: 20,),
-                                Text('Posted on ${formatdate(widget.ntime)}',style: TextStyle(fontWeight: FontWeight.w500),)
+                                    const SizedBox(height: 10,),
+                                Flexible(child: Text(widget.description,style: const TextStyle(fontSize: 18),)),
+                               const SizedBox(height: 20,),
+                                Text('Posted on ${formatdate(widget.ntime)}',style: const TextStyle(fontWeight: FontWeight.w500),)
 
 
             ],

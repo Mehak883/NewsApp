@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print, file_names
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,8 +7,6 @@ import 'package:newsapp/Screens/BodyScreens/Home.dart';
 import 'package:newsapp/Utilities/FirebaseDatabase.dart';
 import 'package:newsapp/widgets/CustomWidget.dart';
 import 'package:sign_in_button/sign_in_button.dart';
-// import 'package:newsapp/Models/Model.dart';
-import 'package:newsapp/Utilities/UserData.dart';
 import 'package:newsapp/Screens/LoginScreens/Signup.dart';
 
 class Login extends StatefulWidget {
@@ -21,8 +20,6 @@ class _LoginState extends State<Login> {
   final _formkey1 = GlobalKey<FormState>();
   TextEditingController email = TextEditingController();
   TextEditingController pass = TextEditingController();
-
-  // Future<void> moveToSignup() async {}
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
@@ -68,6 +65,7 @@ if(userCredential.user!=null){
     } on FirebaseAuthException catch (e) {
       CustomSnackBar.showSnackBar(context, "ok", () => {}, e.code.toString());
     }
+    return null;
   }
 
   Future<void> moveToLogin() async {
@@ -108,10 +106,12 @@ if(userCredential.user!=null){
         String errorCode = result;
         if (errorCode == "invalid-email") {
           CustomSnackBar.showSnackBar(
+              // ignore: duplicate_ignore
+              // ignore: use_build_context_synchronously
               context, "ok", () => {}, "Please Enter a Valid Email");
         } else if (errorCode == 'wrong-password') {
           CustomSnackBar.showSnackBar(
-              context, "Ok", () => null, 'Wrong Password');
+                context, "Ok", () => null, 'Wrong Password');
         } else if (errorCode == "email-already-in-use") {
           CustomSnackBar.showSnackBar(
               context, "ok", () => {}, "User Already Exist");
@@ -131,6 +131,7 @@ if(userCredential.user!=null){
         }
       }
     } else {
+      
       print('hii');
       // context.go('/signup_screen');
       // Navigator.push(
@@ -159,119 +160,118 @@ if(userCredential.user!=null){
                     colorFilter: const ColorFilter.mode(
                         Color.fromARGB(255, 52, 81, 105), BlendMode.modulate),
                   )),
-              Container(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: email,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: email,
+                      decoration: const InputDecoration(
+                          label: Text('Email'),
+                          labelStyle: TextStyle(color: Colors.black),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 52, 81, 105))),
+                          hintText: 'dhawanmehak10@gmail.com'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Email can not be empty";
+                        } else if (value.contains('@') == false) {
+                          return "Please enter a valid Email";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                        controller: pass,
                         decoration: const InputDecoration(
-                            label: Text('Email'),
+                            label: Text('Password'),
                             labelStyle: TextStyle(color: Colors.black),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Color.fromARGB(255, 52, 81, 105))),
-                            hintText: 'dhawanmehak10@gmail.com'),
+                            hintText: 'Mehak123@456'),
+                        obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Email can not be empty";
-                          } else if (value.contains('@') == false) {
-                            return "Please enter a valid Email";
+                            return "Password can not be empty";
+                          } else if (value.length < 6) {
+                            return "Password should be greater then 6 digits";
                           } else {
                             return null;
                           }
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                          controller: pass,
-                          decoration: const InputDecoration(
-                              label: Text('Password'),
-                              labelStyle: TextStyle(color: Colors.black),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 52, 81, 105))),
-                              hintText: 'Mehak123@456'),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Password can not be empty";
-                            } else if (value.length < 6) {
-                              return "Password should be greater then 6 digits";
-                            } else {
-                              return null;
-                            }
-                          }),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      CustomElevatedButton(
-                        message: "Sign Up",
-                        function: moveToLogin,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              child: const Divider(
-                                thickness: 1,
-                                color: Colors.black,
-                              )),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text('or'),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              child: const Divider(
-                                thickness: 1,
-                                color: Colors.black,
-                              )),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      SignInButton(Buttons.google,
-                      mini: false,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 72, vertical: 10), onPressed: () {
-                        print("hi");
-                        signInWithGoogle();
-                      }
-
-                          // icon: ,
-                          ),
-                      Row(children: [
+                        }),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    CustomElevatedButton(
+                      message: "Sign Up",
+                      function: moveToLogin,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      children: [
                         SizedBox(
-                          width: MediaQuery.of(context).size.width / 5,
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            child: const Divider(
+                              thickness: 1,
+                              color: Colors.black,
+                            )),
+                        const SizedBox(
+                          width: 10,
                         ),
-                        const Text("Don't have an account ?"),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Signup(),
-                                ));
-                          },
-                          child: const Text("Sign Up"),
+                        const Text('or'),
+                        const SizedBox(
+                          width: 10,
                         ),
-                      ])
-                    ],
-                  ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            child: const Divider(
+                              thickness: 1,
+                              color: Colors.black,
+                            )),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    SignInButton(Buttons.google,
+                    mini: false,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 72, vertical: 10), onPressed: () {
+                
+                      print("hi");
+                      signInWithGoogle();
+                    }
+              
+                        // icon: ,
+                        ),
+                    Row(children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 5,
+                      ),
+                      const Text("Don't have an account ?"),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Signup(),
+                              ));
+                        },
+                        child: const Text("Sign Up"),
+                      ),
+                    ])
+                  ],
                 ),
               ),
             ],

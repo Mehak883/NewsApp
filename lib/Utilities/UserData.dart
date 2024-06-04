@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, non_constant_identifier_names, file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:newsapp/Models/Model.dart';
 import 'dart:developer';

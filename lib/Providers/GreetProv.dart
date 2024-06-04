@@ -1,10 +1,11 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/foundation.dart';
 class GreetProv with ChangeNotifier {
   String _greet = '';
   // String get greet => _greet;
   String setGreet() {
     int hour = DateTime.now().hour;
-    int minutes = DateTime.now().minute;
 
 
     if (hour > 5 && hour < 12) {

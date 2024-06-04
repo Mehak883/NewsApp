@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_key_in_widget_constructors, prefer_const_constructors, file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 class CustomElevatedButton extends StatefulWidget {
@@ -35,7 +37,7 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 52, 81, 105)),
         shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
+          const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
         ),

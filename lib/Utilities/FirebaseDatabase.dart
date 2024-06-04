@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newsapp/Models/Model.dart';
@@ -88,12 +90,4 @@ static Future<List<Newsmodel>> getLatestData(String type) async {
       return [];
     }
   }
-
-  // static Future getTypes() async {
-  //   store.collection("News").doc('FToQXviFMx6ADrx1ul1X').snapshots().length;
-  //    DocumentReference docRef = store.doc('News/FToQXviFMx6ADrx1ul1X');
-  //   List<CollectionReference> subcollections = await docRef.listCollections().toList();
-  //   return subcollections.length;
-  //   //  s.
-  // }
 }

@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously, avoid_unnecessary_containers, avoid_print, file_names
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,7 +7,6 @@ import 'package:newsapp/Screens/BodyScreens/Home.dart';
 import 'package:newsapp/Utilities/FirebaseDatabase.dart';
 import 'package:newsapp/widgets/CustomWidget.dart';
 import 'package:sign_in_button/sign_in_button.dart';
-// import 'package:newsapp/Models/Model.dart';
 import 'package:newsapp/Screens/LoginScreens/Login.dart';
 import 'package:newsapp/Utilities/UserData.dart';
 
@@ -70,6 +70,7 @@ class _SignupState extends State<Signup> {
     } on FirebaseAuthException catch (e) {
       CustomSnackBar.showSnackBar(context, "ok", () => {}, e.code.toString());
     }
+    return null;
   }
 
   // Future<void> moveToSignup() async {}
@@ -305,7 +306,7 @@ class _SignupState extends State<Signup> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Login(),
+                                  builder: (context) => const Login(),
                                 ));
                           },
                           child: const Text("Sign In"),

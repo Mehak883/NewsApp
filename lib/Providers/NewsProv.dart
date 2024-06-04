@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+// ignore_for_file: avoid_print, file_names
 import 'package:flutter/foundation.dart';
 import 'package:newsapp/Models/Model.dart';
 import 'package:newsapp/Utilities/FirebaseDatabase.dart';
