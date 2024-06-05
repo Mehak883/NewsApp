@@ -5,7 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:newsapp/Screens/BodyScreens/Home.dart';
 import 'package:newsapp/Utilities/FirebaseDatabase.dart';
+import 'package:newsapp/main.dart';
 import 'package:newsapp/widgets/CustomWidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:newsapp/Screens/LoginScreens/Login.dart';
 import 'package:newsapp/Utilities/UserData.dart';
@@ -24,54 +26,56 @@ class _SignupState extends State<Signup> {
   TextEditingController pass = TextEditingController();
   TextEditingController cpass = TextEditingController();
 
-  Future<UserCredential?> signUpWithGoogle() async {
-    try {
-      // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  // Future<UserCredential?> signUpWithGoogle() async {
+  //   try {
+  //     // Trigger the authentication flow
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+  //     // Obtain the auth details from the request
+  //     final GoogleSignInAuthentication? googleAuth =
+  //         await googleUser?.authentication;
+  //     print(googleAuth?.idToken);
+  //     // Create a new credential
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth?.accessToken,
+  //       idToken: googleAuth?.idToken,
+  //     );
+  //     final UserCredential userCredential =
+  //         await FirebaseAuth.instance.signInWithCredential(credential);
+  //     if (userCredential.user != null) {
+  //       await UserData.userdata(FirebaseAuth.instance.currentUser!.uid,
+  //           userCredential.user!.email.toString(), name.text);
+  //             var sharedPref = await SharedPreferences.getInstance();
+  //   await sharedPref.setBool(MyApp.keyLogin, true);
+  //       await Navigator.push(
+  //         context,
+  //         PageRouteBuilder(
+  //           pageBuilder: (context, animation, secondaryAnimation) =>
+  //               const Home(),
+  //           transitionsBuilder:
+  //               (context, animation, secondaryAnimation, child) {
+  //             const begin = Offset(0.0, 1.0);
+  //             const end = Offset.zero;
+  //             const curve = Curves.ease;
 
-      // Create a new credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      if (userCredential.user != null) {
-        await UserData.userdata(FirebaseAuth.instance.currentUser!.uid,
-            userCredential.user!.email.toString(), name.text);
-        await Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const Home(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.ease;
+  //             var tween =
+  //                 Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+  //             var offsetAnimation = animation.drive(tween);
 
-              var tween =
-                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              var offsetAnimation = animation.drive(tween);
-
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
-          ),
-        );
-      }
-      // Once signed in, return the UserCredential
-    } on FirebaseAuthException catch (e) {
-      CustomSnackBar.showSnackBar(context, "ok", () => {}, e.code.toString());
-    }
-    return null;
-  }
+  //             return SlideTransition(
+  //               position: offsetAnimation,
+  //               child: child,
+  //             );
+  //           },
+  //         ),
+  //       );
+  //     }
+  //     // Once signed in, return the UserCredential
+  //   } on FirebaseAuthException catch (e) {
+  //     CustomSnackBar.showSnackBar(context, "ok", () => {}, e.code.toString());
+  //   }
+  //   return null;
+  // }
 
   // Future<void> moveToSignup() async {}
   Future<void> moveToSignup() async {
@@ -81,13 +85,16 @@ class _SignupState extends State<Signup> {
       print(result);
       if (result == true) {
         print('hloo');
-        // var SharedPref = await SharedPreferences.getInstance();
-        // SharedPref.setBool(splash_screenState.KEYLOGIN, true);
+        try {
+    var sharedPref = await SharedPreferences.getInstance();
+    await sharedPref.setBool(MyApp.keyLogin, true);
+  } catch (e) {
+    print('Error initializing SharedPreferences: $e');
+  }
+        print("hii before");
         await UserData.userdata(
             FirebaseAuth.instance.currentUser!.uid, email.text, name.text);
-
-        // context.go('/');
-
+        print("hii");
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -110,6 +117,7 @@ class _SignupState extends State<Signup> {
             },
           ),
         );
+        // print("Success signup, ${sharedPref.getString(MyApp.keyLogin)}");
 
         print("Succes");
       } else if (result is String) {
@@ -284,18 +292,7 @@ class _SignupState extends State<Signup> {
                       const SizedBox(
                         height: 15,
                       ),
-                      SignInButton(
-                        Buttons.google,
-                        text: 'Sign up with Google',
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 72, vertical: 10),
-                        onPressed: () {
-                          signUpWithGoogle();
-                        },
-                        // icon: ,
-                      ),
+                     
                       Row(children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 5,

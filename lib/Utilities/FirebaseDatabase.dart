@@ -33,6 +33,18 @@ class FirebaseStore {
     }
   }
 
+  static Future<Usermodel> userInfo() async {
+    var doc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    Usermodel user = Usermodel.fromDocument(doc);
+    print(user.email);
+    print(user.name);
+
+    return user;
+  }
+
   static Future<List<Newsmodel>> getQueryData(String type) async {
     try {
       var querySnapshot = await store
@@ -61,14 +73,13 @@ class FirebaseStore {
     }
   }
 
-
-static Future<List<Newsmodel>> getLatestData(String type) async {
+  static Future<List<Newsmodel>> getLatestData(String type) async {
     try {
       var querySnapshot = await store
           .collection('News')
           .doc('FToQXviFMx6ADrx1ul1X')
           .collection(type)
-          .orderBy('ntime',descending: true)
+          .orderBy('ntime', descending: true)
           .get();
 
       List<Newsmodel> newslist = [];

@@ -1,5 +1,5 @@
 // ignore_for_file: avoid_print, file_names
-
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/Models/Model.dart';
@@ -19,38 +19,53 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<String> types = ['Topstories', 'Technology', 'Sports'];
   int selectedIndex = 0;
+  // String greet = '';
+  // void _updateGreetingMessage() {
+  //   final hour = DateTime.now().hour;
+  //   setState(() {
+  //     if (hour < 12) {
+  //       greet = 'Good Morning';
+  //     } else if (hour < 17) {
+  //       greet = 'Good Afternoon';
+  //     } else {
+  //       greet = 'Good Evening';
+  //     }
+  //   });
+  // }
+  String uname = '';
+
   @override
   void initState() {
-    
     super.initState();
-
     final newsProv = Provider.of<NewsProv>(context, listen: false);
+    final greetProv = Provider.of<GreetProv>(context, listen: false);
+    greetProv.setGreet();
+    // greetProv.userInfor().then((value) => uname = value);
     newsProv.fetchNews('Topstories');
+    fetchUserInfo();
+    Timer.periodic(const Duration(minutes: 1), (timer) {
+      print('hi');
+      greetProv.setGreet();
+    });
+  }
+
+  Future<void> fetchUserInfo() async {
+    String name = '';
+    final greetProv = Provider.of<GreetProv>(context, listen: false);
+    name = await greetProv.userInfor();
+    setState(() {
+      uname = name;
+    });
   }
 
   // ignore: non_constant_identifier_names
   Future<void> sign_out(BuildContext context) async {
     FirebaseAuth.instance.signOut().then((value) async {
-      if (context.mounted) {
-        Navigator.of(context).pop();
-        Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => const Login(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                const begin = Offset(0.0, 1.0);
-                const end = Offset.zero;
-                final tween = Tween(begin: begin, end: end);
-                final offsetAnimation = animation.drive(tween);
-
-                return SlideTransition(
-                  position: offsetAnimation,
-                  child: child,
-                );
-              },
-            ));
-      }
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Login(),
+          ));
       // context.go('/signin_screen');
     });
   }
@@ -58,6 +73,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final newsProv = Provider.of<NewsProv>(context);
+    final greetProv = Provider.of<GreetProv>(context, listen: false);
+    Future<String> convFutureString() async {
+      String name = '';
+      await greetProv.userInfor().then((value) {
+        name = value;
+      });
+      print('name : $name');
+      return name;
+    }
+
     List<Newsmodel> newslist = newsProv.newslist;
 
     return Scaffold(
@@ -71,14 +96,10 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Consumer<GreetProv>(
-                      builder: (context, value, child) {
-                        return Text(
-                          'Welcome, ${value.setGreet()}',
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w500),
-                        );
-                      },
+                    Text(
+                      '${greetProv.greet}, ${uname[0].toUpperCase()}${uname.substring(1)}',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w500),
                     ),
                     IconButton(
                         onPressed: () {
@@ -103,7 +124,7 @@ class _HomeState extends State<Home> {
                                   foregroundColor: selectedIndex == index
                                       ? Colors.white
                                       : const Color.fromARGB(255, 52, 81, 105)),
-                              onPressed: () {
+                              onPressed: () async {
                                 newsProv.fetchNews(types[index]);
                                 newslist = newsProv.newslist;
                                 print("newslist.length ${newslist.length}");
@@ -196,8 +217,8 @@ class _HomeState extends State<Home> {
                                     image: NetworkImage(
                                         newslist[index].imageUrl.toString()),
                                     height: 270,
-                                    width: MediaQuery.of(context).size.width -
-                                        10,
+                                    width:
+                                        MediaQuery.of(context).size.width - 10,
                                     fit: BoxFit.cover),
                                 // ElevatedButton(
                                 //     style: ElevatedButton.styleFrom(
@@ -219,8 +240,8 @@ class _HomeState extends State<Home> {
                                   child: Container(
                                     color: const Color.fromARGB(203, 0, 0, 0),
                                     height: 210,
-                                    width: MediaQuery.of(context).size.width -
-                                        10,
+                                    width:
+                                        MediaQuery.of(context).size.width - 10,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 0, horizontal: 10),
@@ -236,8 +257,8 @@ class _HomeState extends State<Home> {
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
                                               child: Text(
                                                 newslist[index]
                                                     .description
@@ -245,8 +266,7 @@ class _HomeState extends State<Home> {
                                                 style: const TextStyle(
                                                     color: Colors.white),
                                                 maxLines: 4,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                               ))
                                         ],
                                       ),

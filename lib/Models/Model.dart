@@ -33,6 +33,15 @@ class Usermodel {
     };
   }
 
+  factory Usermodel.fromDocument(DocumentSnapshot doc) {
+    print(' hi ${doc["name"] as String}');
+    return Usermodel(
+      uid: doc.id,
+      name: doc['name'] != null ? doc['name'] as String : null,
+      email: doc['email'] != null ? doc['email'] as String : null,
+    );
+  }
+
   factory Usermodel.fromMap(Map<String, dynamic> map) {
     return Usermodel(
       uid: map['uid'] != null ? map['uid'] as String : null,

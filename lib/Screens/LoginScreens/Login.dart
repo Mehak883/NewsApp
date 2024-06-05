@@ -5,7 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:newsapp/Screens/BodyScreens/Home.dart';
 import 'package:newsapp/Utilities/FirebaseDatabase.dart';
+import 'package:newsapp/main.dart';
 import 'package:newsapp/widgets/CustomWidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:newsapp/Screens/LoginScreens/Signup.dart';
 
@@ -37,6 +39,8 @@ class _LoginState extends State<Login> {
       );
  final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 if(userCredential.user!=null){
+    var sharedPref = await SharedPreferences.getInstance();
+    await sharedPref.setBool(MyApp.keyLogin, true);
    Navigator.push(
           context,
           PageRouteBuilder(
@@ -99,8 +103,9 @@ if(userCredential.user!=null){
             },
           ),
         );
-
-        print("Succes");
+  var sharedPref = await SharedPreferences.getInstance();
+        sharedPref.setBool(MyApp.keyLogin, true);
+        print("Success login, ${sharedPref.getString(MyApp.keyLogin)}");
       } else if (result is String) {
         print(result);
         String errorCode = result;
